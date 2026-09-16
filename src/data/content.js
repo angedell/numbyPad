@@ -1,5 +1,7 @@
 export const supportEmail = "numbypad@angedell.it";
 
+export const appStoreUrl = "https://apps.apple.com/us/app/numbypad/id6790622544";
+
 export const pitch =
   "Capture phone numbers the moment you meet someone — on your Apple Watch or iPhone — enrich them with context, then save to Contacts in one tap.";
 
@@ -28,7 +30,7 @@ export const accentStorageKey = "numbypad-accent";
 export const entryPoints = [
   {
     key: "watch",
-    icon: "⌚",
+    icon: "Watch",
     tone: "watch",
     title: "Capture on Apple Watch",
     desc: "The fastest way. Works with or without your phone nearby. Numbers queue up and sync automatically.",
@@ -41,7 +43,7 @@ export const entryPoints = [
   },
   {
     key: "phone",
-    icon: "📱",
+    icon: "Smartphone",
     tone: "phone",
     title: "Add on iPhone",
     desc: "For numbers you want to type on the bigger screen, or when you don't have your Watch.",
@@ -54,7 +56,7 @@ export const entryPoints = [
   },
   {
     key: "share",
-    icon: "↗",
+    icon: "Share2",
     tone: "share",
     title: "Share a Profile or Link",
     desc: "Share an Instagram, X (Twitter), or Telegram profile directly into numbyPad from any app.",
@@ -68,42 +70,42 @@ export const entryPoints = [
 ];
 
 export const capturedContext = [
-  { icon: "📞", name: "Phone number", note: "Auto-formatted to international E.164 standard" },
-  { icon: "🌍", name: "Country prefix", note: "Auto-resolved from GPS or manually picked" },
-  { icon: "📍", name: "Location", note: "GPS coordinates + nearby place name" },
-  { icon: "🕐", name: "Date & time", note: "Exact moment the number was captured" },
-  { icon: "📝", name: "Note", note: "Free-text reminder, editable later" },
-  { icon: "🎙", name: "Voice note", note: "Recorded on Watch, transcribed on iPhone" },
-  { icon: "📋", name: "Contact lists", note: "Pre-assign to groups in Contacts" },
-  { icon: "🔗", name: "Social profiles", note: "Instagram, X, Telegram (via share sheet)" },
-  { icon: "🌐", name: "Links", note: "URLs with tracking parameters stripped" },
-  { icon: "🏷", name: "Name", note: "Optional at capture, required to save" },
-  { icon: "📸", name: "Contact photo", note: "Matched from Contacts if it exists" },
-  { icon: "🗺", name: "Map pin", note: "Shows on the map tab after saving" },
+  { icon: "Phone", name: "Phone number", note: "Auto-formatted to international E.164 standard" },
+  { icon: "Globe", name: "Country prefix", note: "Auto-resolved from GPS or manually picked" },
+  { icon: "MapPin", name: "Location", note: "GPS coordinates + nearby place name" },
+  { icon: "Clock", name: "Date & time", note: "Exact moment the number was captured" },
+  { icon: "FileText", name: "Note", note: "Free-text reminder, editable later" },
+  { icon: "Mic", name: "Voice note", note: "Recorded on Watch, transcribed on iPhone" },
+  { icon: "ClipboardList", name: "Contact lists", note: "Pre-assign to groups in Contacts" },
+  { icon: "Link2", name: "Social profiles", note: "Instagram, X, Telegram (via share sheet)" },
+  { icon: "Link", name: "Links", note: "URLs with tracking parameters stripped" },
+  { icon: "Tag", name: "Name", note: "Optional at capture, required to save" },
+  { icon: "Camera", name: "Contact photo", note: "Matched from Contacts if it exists" },
+  { icon: "Map", name: "Map pin", note: "Shows on the map tab after saving" },
 ];
 
 export const stagingActions = [
   {
     key: "name",
-    icon: "🏷",
+    icon: "Tag",
     title: "Give it a name",
     desc: "Tap any number to open its detail view and type a name — required to save to Contacts",
   },
   {
     key: "prefix",
-    icon: "🌍",
+    icon: "Globe",
     title: "Set the prefix",
     desc: "If the number arrived without a country code (no signal at capture time), set it here",
   },
   {
     key: "place",
-    icon: "📍",
+    icon: "MapPin",
     title: "Pick a place",
     desc: "Replace raw GPS coordinates with a meaningful place name (restaurant, venue, street)",
   },
   {
     key: "list",
-    icon: "📋",
+    icon: "ClipboardList",
     title: "Assign to list",
     desc: "Add the contact to one or more Contacts groups before saving",
   },
@@ -112,7 +114,7 @@ export const stagingActions = [
 export const outcomes = [
   {
     key: "save",
-    icon: "✅",
+    icon: "CheckCircle2",
     tone: "save",
     title: "Save to Contacts",
     desc: "The main outcome. The number becomes a full contact in your iPhone's Contacts app.",
@@ -127,7 +129,7 @@ export const outcomes = [
   },
   {
     key: "enrich",
-    icon: "✨",
+    icon: "Sparkles",
     tone: "enrich",
     title: "Enrich Existing Contact",
     desc: "The number already belongs to someone in your Contacts. Add the capture context to them instead of creating a duplicate.",
@@ -141,7 +143,7 @@ export const outcomes = [
   },
   {
     key: "voice",
-    icon: "🎙",
+    icon: "Mic",
     tone: "voice",
     title: "Process Voice Note",
     desc: "A voice note you recorded on your Watch arrives on iPhone for transcription or AI summary.",
@@ -155,7 +157,7 @@ export const outcomes = [
   },
   {
     key: "trash",
-    icon: "🗑",
+    icon: "Trash2",
     tone: "trash",
     title: "Move to Trash",
     desc: "Don't need it — but don't lose it either. Numbers sit in Trash for 30 days before auto-deletion.",
@@ -172,42 +174,42 @@ export const outcomes = [
 export const features = [
   {
     key: "map",
-    icon: "🗺",
+    icon: "Map",
     color: "teal",
     title: "Map View",
     body: "Every captured number with a GPS fix appears as a pin on a map. See at a glance where and when you met people — conference, event, bar, street. Tap a pin to open the staged number directly from the map.",
   },
   {
     key: "travel",
-    icon: "✈️",
+    icon: "Plane",
     color: "amber",
     title: "Fix for Travel",
     body: "Contacts saved with local-format numbers (e.g. 347 1234567 instead of +39 347 1234567) stop working abroad. numbyPad scans your Contacts and shows a list with before → after previews. Choose your country, select who to fix, tap Apply — done in seconds.",
   },
   {
     key: "sync",
-    icon: "🔄",
+    icon: "RefreshCw",
     color: "phone",
     title: "Watch–iPhone Sync",
     body: "Everything syncs both ways in real time. Numbers captured on the Watch appear immediately on the iPhone's Numbers tab. Edits made on the iPhone (name, note, place) mirror back to the Watch timeline. Works live when both are active, or queued in the background.",
   },
   {
     key: "share",
-    icon: "📱",
+    icon: "Share2",
     color: "share",
     title: "Share from Any App",
     body: "Share an Instagram, X, or Telegram profile with numbyPad from any app. If you have one staged number: the profile attaches automatically. Multiple staged numbers: a picker asks which. Zero staged numbers: it waits and attaches to your next capture. Tracker parameters are stripped from URLs by default.",
   },
   {
     key: "prefix",
-    icon: "🌍",
+    icon: "Globe",
     color: "sky",
     title: "Smart Country Prefix",
     body: "The Watch resolves your country prefix offline-first — no network needed. It starts with an offline country table, refines it as the GPS fix arrives, and falls back to your iPhone's last known region. You can also pick the prefix manually by tapping the chip on the keypad.",
   },
   {
     key: "theme",
-    icon: "🎨",
+    icon: "Palette",
     color: "red",
     title: "Accent Color & Icon",
     body: "Choose an accent color in Settings → numbyPad. The entire app (Watch, iPhone, share sheet) updates in sync — and your home screen icon switches to match automatically, with no confirmation dialog. Available in 12 colors including Blue, Red, Green, Purple, Pink, and more.",
@@ -217,21 +219,21 @@ export const features = [
 export const goodToKnow = [
   {
     key: "privacy",
-    icon: "🔒",
+    icon: "Lock",
     color: "green",
     title: "Privacy-first design",
     body: "No account. No cloud. No analytics. Your numbers live on your Apple Watch, your iPhone, and optionally iCloud (for voice notes only). Nothing is sent to any server.",
   },
   {
     key: "offline",
-    icon: "⚡",
+    icon: "Zap",
     color: "amber",
     title: "Offline-ready",
     body: "You can capture a number on your Watch with no WiFi, no cellular, and no iPhone nearby. The capture queues and syncs the moment a connection is available. The prefix chip resolves offline from a built-in country table.",
   },
   {
     key: "dupe",
-    icon: "🔁",
+    icon: "Repeat",
     color: "sky",
     title: "Duplicate protection",
     body: "numbyPad checks whether the number already exists in your Contacts before you save. If it does, it offers to enrich the existing record instead — so you never end up with two entries for the same person.",
@@ -239,16 +241,16 @@ export const goodToKnow = [
 ];
 
 export const useCasePills = [
-  { icon: "⌚", label: "Capture on Apple Watch" },
-  { icon: "📱", label: "Add number on iPhone" },
-  { icon: "↗", label: "Share a social profile" },
-  { icon: "🗺", label: "See captures on a map" },
-  { icon: "🎙", label: "Record a voice note" },
-  { icon: "✅", label: "Save to Contacts" },
-  { icon: "✨", label: "Enrich existing contact" },
-  { icon: "✈️", label: "Fix numbers for travel" },
-  { icon: "🗑", label: "Trash & restore" },
-  { icon: "🎨", label: "Customize accent & icon" },
+  { icon: "Watch", label: "Capture on Apple Watch" },
+  { icon: "Smartphone", label: "Add number on iPhone" },
+  { icon: "Share2", label: "Share a social profile" },
+  { icon: "Map", label: "See captures on a map" },
+  { icon: "Mic", label: "Record a voice note" },
+  { icon: "CheckCircle2", label: "Save to Contacts" },
+  { icon: "Sparkles", label: "Enrich existing contact" },
+  { icon: "Plane", label: "Fix numbers for travel" },
+  { icon: "Trash2", label: "Trash & restore" },
+  { icon: "Palette", label: "Customize accent & icon" },
 ];
 
 export const faqs = [

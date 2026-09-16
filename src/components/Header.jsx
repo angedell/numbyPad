@@ -1,7 +1,11 @@
 import { NavLink } from "react-router-dom";
 import ThemeSwitcher from "./ThemeSwitcher.jsx";
 import styles from "./Header.module.css";
-import imgUrl from '/public/logo.png'
+
+// public/logo.png is a plain white mark on transparent — reference it via
+// BASE_URL (not a bundler import) so the project-pages base path ("/numbyPad/")
+// is applied correctly, and invert it for light backgrounds in CSS.
+const logoUrl = `${import.meta.env.BASE_URL}logo.png`;
 
 const links = [
   { to: "/", label: "Home", end: true },
@@ -14,7 +18,7 @@ export default function Header() {
   return (
     <header className={styles.header}>
       <NavLink to="/" className={styles.brand}>
-        <img src={imgUrl} alt="" className={styles.brandMark} aria-hidden="true" />
+        <img src={logoUrl} alt="" className={styles.brandMark} aria-hidden="true" />
         numbyPad
       </NavLink>
       <nav className={styles.nav} aria-label="Primary">

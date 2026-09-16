@@ -1,8 +1,10 @@
 import { Link } from "react-router-dom";
 import { Section, Divider } from "../components/Section.jsx";
 import { StepCard, ContextChip, FeatureCard, ActionChip, Pill } from "../components/Cards.jsx";
+import Icon from "../components/Icon.jsx";
 import {
   pitch,
+  appStoreUrl,
   entryPoints,
   capturedContext,
   stagingActions,
@@ -21,10 +23,14 @@ export default function Home() {
         <h1 className={styles.title}>Never lose a number again</h1>
         <p className={styles.subtitle}>{pitch}</p>
         <div className={styles.ctaRow}>
-          {/* TODO: swap for the App Store link once numbyPad is live */}
-          <Link to="/support" className={styles.ctaPrimary}>
-            Get in touch
-          </Link>
+          <a
+            href={appStoreUrl}
+            className={styles.ctaPrimary}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Download on the App Store
+          </a>
           <Link to="/faq" className={styles.ctaSecondary}>
             Read the FAQ
           </Link>
@@ -71,8 +77,8 @@ export default function Home() {
       <Section>
         <div className={styles.stagingBox}>
           <div className={styles.stagingHeader}>
-            <span className={styles.stagingIcon} aria-hidden="true">
-              📥
+            <span className={styles.stagingIcon}>
+              <Icon name="Inbox" size={28} />
             </span>
             <div>
               <h2>Numbers Tab — Staging Area</h2>

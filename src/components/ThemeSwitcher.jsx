@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { Check } from "lucide-react";
 import { accentThemes } from "../data/content.js";
 import { useAccentTheme } from "../hooks/useAccentTheme.js";
 import styles from "./ThemeSwitcher.module.css";
@@ -57,7 +58,7 @@ export default function ThemeSwitcher() {
               >
                 {theme.key === accentKey && (
                   <span className={styles.swatchCheck} style={{ color: theme.fg }} aria-hidden="true">
-                    ✓
+                    <Check size={13} strokeWidth={3} />
                   </span>
                 )}
                 <span className="visually-hidden">{theme.name}</span>

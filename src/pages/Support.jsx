@@ -1,19 +1,20 @@
 import { Link } from "react-router-dom";
 import { FeatureCard } from "../components/Cards.jsx";
+import Icon from "../components/Icon.jsx";
 import { supportEmail } from "../data/content.js";
 import styles from "./Simple.module.css";
 
 const tips = [
   {
     key: "sync",
-    icon: "🔄",
+    icon: "RefreshCw",
     color: "phone",
     title: "Numbers not syncing?",
     body: "Make sure both your iPhone and Apple Watch are paired, unlocked, and nearby, then reopen the app on both. Sync also runs in the background if a device is out of range.",
   },
   {
     key: "prefix",
-    icon: "🌍",
+    icon: "Globe",
     color: "sky",
     title: "Wrong country prefix?",
     body: "Tap the prefix chip on the keypad, or open the staged number's detail view, to set the country manually — no need to wait for GPS.",
@@ -35,7 +36,8 @@ export default function Support() {
         <div className={styles.contactCard}>
           <p>We usually reply within a couple of business days.</p>
           <a className={styles.emailButton} href={`mailto:${supportEmail}`}>
-            ✉️ {supportEmail}
+            <Icon name="Mail" size={16} />
+            {supportEmail}
           </a>
         </div>
 
