@@ -1,0 +1,185 @@
+/* ---- shared tone colors, applied via data-tone ---- */
+.tonedCard {
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  padding: 22px 20px 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+.tonedCard::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 0%, rgba(255, 255, 255, 0.04) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.tonedCard[data-tone="watch"] { background: var(--watch-bg); border-color: var(--watch-bd); }
+.tonedCard[data-tone="phone"] { background: var(--phone-bg); border-color: var(--phone-bd); }
+.tonedCard[data-tone="share"] { background: var(--share-bg); border-color: var(--share-bd); }
+.tonedCard[data-tone="save"] { background: var(--green-bg); border-color: var(--green-bd); }
+.tonedCard[data-tone="enrich"] { background: var(--sky-bg); border-color: var(--sky-bd); }
+.tonedCard[data-tone="voice"] { background: var(--phone-bg); border-color: var(--phone-bd); }
+.tonedCard[data-tone="trash"] { background: var(--red-bg); border-color: var(--red-bd); }
+
+.icon {
+  font-size: 30px;
+  margin-bottom: 12px;
+  display: block;
+  line-height: 1;
+}
+
+.title {
+  font-size: 17px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+[data-tone="watch"] .title { color: var(--watch); }
+[data-tone="phone"] .title { color: var(--phone); }
+[data-tone="share"] .title { color: var(--share); }
+[data-tone="save"] .title { color: var(--green); }
+[data-tone="enrich"] .title { color: var(--sky); }
+[data-tone="voice"] .title { color: var(--phone); }
+[data-tone="trash"] .title { color: var(--red); }
+
+.desc {
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--text-muted);
+  margin-bottom: 14px;
+}
+
+.stepList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.stepList li {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--text);
+}
+
+.stepBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--surface-raised);
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text-muted);
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+/* ---- context chip ---- */
+.ctxCard {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 14px 12px 12px;
+  text-align: center;
+}
+
+.ctxIcon {
+  font-size: 20px;
+  display: block;
+  margin-bottom: 6px;
+}
+
+.ctxName {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text);
+  display: block;
+  margin-bottom: 4px;
+}
+
+.ctxNote {
+  font-size: 10px;
+  color: var(--text-dim);
+  line-height: 1.4;
+}
+
+/* ---- feature card ---- */
+.featureCard {
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  padding: 20px 18px;
+}
+
+.featureTitle {
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.featureTitle[data-color="teal"] { color: var(--teal); }
+.featureTitle[data-color="amber"] { color: var(--amber); }
+.featureTitle[data-color="phone"] { color: var(--phone); }
+.featureTitle[data-color="share"] { color: var(--share); }
+.featureTitle[data-color="sky"] { color: var(--sky); }
+.featureTitle[data-color="red"] { color: var(--red); }
+.featureTitle[data-color="green"] { color: var(--green); }
+
+.featureBody {
+  font-size: 12px;
+  line-height: 1.7;
+  color: var(--text-muted);
+}
+
+/* ---- staging action chip ---- */
+.actionChip {
+  border-radius: 14px;
+  padding: 14px 14px 12px;
+  border: 1px solid var(--border);
+  background: var(--surface-raised);
+  text-align: center;
+}
+
+.actionChip .chipIcon {
+  font-size: 20px;
+  display: block;
+  margin-bottom: 6px;
+}
+
+.actionChip .chipTitle {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text);
+  display: block;
+  margin-bottom: 4px;
+}
+
+.actionChip .chipDesc {
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
+/* ---- use case pill ---- */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: 100px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  font-size: 12px;
+  color: var(--text-muted);
+}

@@ -1,0 +1,981 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>numbyPad — How It Works</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:       #08080e;
+  --surface:  #0f0f18;
+  --border:   #1c1c2e;
+  --text:     #e2e2f0;
+  --muted:    #666680;
+  --watch:    #3b82f6;
+  --watch-bg: #0a1628;
+  --watch-bd: #1e3a6e;
+  --phone:    #a855f7;
+  --phone-bg: #130a24;
+  --phone-bd: #3d1672;
+  --share:    #ec4899;
+  --share-bg: #1a061a;
+  --share-bd: #6d1040;
+  --green:    #22c55e;
+  --green-bg: #071a0f;
+  --green-bd: #155030;
+  --amber:    #f59e0b;
+  --amber-bg: #1a1100;
+  --amber-bd: #5a3a00;
+  --red:      #ef4444;
+  --red-bg:   #1a0606;
+  --red-bd:   #5a1414;
+  --teal:     #14b8a6;
+  --teal-bg:  #041412;
+  --teal-bd:  #0d4a44;
+  --sky:      #38bdf8;
+  --sky-bg:   #041420;
+  --sky-bd:   #0d3a5a;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  padding: 0 0 80px;
+}
+
+/* ── Header ── */
+.hero {
+  text-align: center;
+  padding: 56px 24px 40px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 48px;
+}
+.hero h1 {
+  font-size: 36px;
+  font-weight: 800;
+  letter-spacing: -1px;
+  background: linear-gradient(135deg, #fff 30%, #888 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero p {
+  color: var(--muted);
+  font-size: 15px;
+  margin-top: 10px;
+  max-width: 560px;
+  margin-left: auto;
+  margin-right: auto;
+  line-height: 1.6;
+}
+
+/* ── Layout wrapper ── */
+.page { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+/* ── Section titles ── */
+.section-label {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* ── Step numbers ── */
+.step-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  background: #1c1c2e;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--muted);
+  flex-shrink: 0;
+}
+
+/* ══════════════════════════════════════════
+   ENTRY POINTS
+══════════════════════════════════════════ */
+
+.entry-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+.entry-card {
+  border-radius: 20px;
+  padding: 22px 20px 20px;
+  border: 1px solid;
+  position: relative;
+  overflow: hidden;
+}
+.entry-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 0%, rgba(255,255,255,0.04) 0%, transparent 70%);
+  pointer-events: none;
+}
+.entry-icon {
+  font-size: 32px;
+  margin-bottom: 12px;
+  display: block;
+  line-height: 1;
+}
+.entry-title {
+  font-size: 17px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+.entry-desc {
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--muted);
+  margin-bottom: 14px;
+}
+.step-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+.step-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 12px;
+  line-height: 1.4;
+  color: #c0c0d8;
+}
+
+/* Color schemes */
+.entry-watch { background: var(--watch-bg); border-color: var(--watch-bd); }
+.entry-watch .entry-title { color: var(--watch); }
+.entry-watch .step-badge { background: #0d2040; color: var(--watch); }
+
+.entry-phone { background: var(--phone-bg); border-color: var(--phone-bd); }
+.entry-phone .entry-title { color: var(--phone); }
+.entry-phone .step-badge { background: #1a0830; color: var(--phone); }
+
+.entry-share { background: var(--share-bg); border-color: var(--share-bd); }
+.entry-share .entry-title { color: var(--share); }
+.entry-share .step-badge { background: #1a0616; color: var(--share); }
+
+/* ══════════════════════════════════════════
+   CONNECTOR ARROWS
+══════════════════════════════════════════ */
+.arrow-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0;
+  margin: 4px 0;
+  height: 36px;
+  position: relative;
+}
+.arrow-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  color: var(--muted);
+}
+.arrow-shaft {
+  width: 1px;
+  background: #2a2a40;
+  flex: 1;
+  min-height: 10px;
+}
+.arrow-head { font-size: 16px; color: #2a2a50; line-height: 1; }
+.arrow-label {
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  color: #333348;
+  text-transform: uppercase;
+}
+
+/* Full-width down arrow */
+.down-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin: 8px 0;
+  color: #2a2a40;
+}
+.down-arrow span { font-size: 20px; }
+.down-arrow p {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #2a2a50;
+}
+
+/* ══════════════════════════════════════════
+   STAGING AREA
+══════════════════════════════════════════ */
+.staging-box {
+  border: 1px solid #2a1e4a;
+  border-radius: 24px;
+  background: #0c0818;
+  padding: 28px 28px 24px;
+  margin-bottom: 12px;
+  position: relative;
+  overflow: hidden;
+}
+.staging-box::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #3d2070 30%, #7030b0 50%, #3d2070 70%, transparent);
+}
+.staging-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.staging-icon { font-size: 28px; }
+.staging-titles h2 {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--phone);
+}
+.staging-titles p {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 2px;
+}
+
+.staging-actions {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+.action-chip {
+  border-radius: 14px;
+  padding: 12px 14px;
+  border: 1px solid;
+  text-align: center;
+}
+.action-chip .chip-icon { font-size: 20px; display: block; margin-bottom: 6px; }
+.action-chip .chip-title { font-size: 11px; font-weight: 700; display: block; margin-bottom: 3px; }
+.action-chip .chip-desc { font-size: 10px; line-height: 1.4; }
+
+.chip-name { background: #081a10; border-color: #104020; }
+.chip-name .chip-title { color: var(--green); }
+.chip-name .chip-desc { color: #406050; }
+
+.chip-prefix { background: #0c1020; border-color: #1a2040; }
+.chip-prefix .chip-title { color: var(--sky); }
+.chip-prefix .chip-desc { color: #304060; }
+
+.chip-place { background: #0a1020; border-color: #182040; }
+.chip-place .chip-title { color: var(--teal); }
+.chip-place .chip-desc { color: #204040; }
+
+.chip-list { background: #140c20; border-color: #2a1640; }
+.chip-list .chip-title { color: var(--phone); }
+.chip-list .chip-desc { color: #402060; }
+
+/* ══════════════════════════════════════════
+   OUTCOME GRID
+══════════════════════════════════════════ */
+.outcome-section { margin-bottom: 40px; }
+
+.outcome-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  gap: 14px;
+}
+
+.outcome-card {
+  border-radius: 20px;
+  padding: 20px 18px;
+  border: 1px solid;
+  position: relative;
+  overflow: hidden;
+}
+.outcome-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 0%, rgba(255,255,255,0.03) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.outcome-icon { font-size: 26px; display: block; margin-bottom: 10px; }
+.outcome-title { font-size: 14px; font-weight: 700; margin-bottom: 6px; }
+.outcome-desc { font-size: 11px; line-height: 1.6; color: var(--muted); margin-bottom: 12px; }
+.outcome-steps { list-style: none; display: flex; flex-direction: column; gap: 5px; }
+.outcome-steps li {
+  font-size: 11px;
+  color: #a0a0c0;
+  padding-left: 12px;
+  position: relative;
+  line-height: 1.4;
+}
+.outcome-steps li::before {
+  content: '›';
+  position: absolute;
+  left: 0;
+  color: var(--muted);
+}
+
+.outcome-save { background: var(--green-bg); border-color: var(--green-bd); }
+.outcome-save .outcome-title { color: var(--green); }
+
+.outcome-enrich { background: var(--sky-bg); border-color: var(--sky-bd); }
+.outcome-enrich .outcome-title { color: var(--sky); }
+
+.outcome-voice { background: var(--phone-bg); border-color: var(--phone-bd); }
+.outcome-voice .outcome-title { color: var(--phone); }
+
+.outcome-trash { background: var(--red-bg); border-color: var(--red-bd); }
+.outcome-trash .outcome-title { color: var(--red); }
+
+/* ══════════════════════════════════════════
+   FEATURES GRID
+══════════════════════════════════════════ */
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin-bottom: 40px;
+}
+
+.feature-card {
+  border-radius: 20px;
+  padding: 20px 18px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+}
+.feature-title {
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.feature-body {
+  font-size: 11px;
+  line-height: 1.7;
+  color: var(--muted);
+}
+.feature-body b { color: #a0a0c0; font-weight: 500; }
+
+/* ══════════════════════════════════════════
+   VISUAL DIVIDERS
+══════════════════════════════════════════ */
+.flow-divider {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: 28px 0;
+}
+.flow-divider::before,
+.flow-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border));
+}
+.flow-divider::after {
+  background: linear-gradient(270deg, transparent, var(--border));
+}
+.flow-divider span {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: #333;
+  white-space: nowrap;
+}
+
+/* ══════════════════════════════════════════
+   MAIN FLOW SVG BRIDGE
+══════════════════════════════════════════ */
+.bridge {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 0;
+  margin: 0 0 12px;
+  height: 48px;
+  position: relative;
+}
+.bridge svg { width: 100%; height: 48px; }
+
+/* ══════════════════════════════════════════
+   USE CASE PILL ROW
+══════════════════════════════════════════ */
+.use-case-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  margin-bottom: 48px;
+}
+.use-case-pill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: 100px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  font-size: 12px;
+  color: #8080a0;
+}
+.use-case-pill .pill-icon { font-size: 14px; }
+
+/* ══════════════════════════════════════════
+   CAPTURE CONTEXT DETAIL
+══════════════════════════════════════════ */
+.context-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.ctx-card {
+  background: #0c0c18;
+  border: 1px solid #1e1e30;
+  border-radius: 14px;
+  padding: 12px 12px 10px;
+  text-align: center;
+}
+.ctx-icon { font-size: 20px; display: block; margin-bottom: 6px; }
+.ctx-name { font-size: 10px; font-weight: 700; color: #8080b0; display: block; margin-bottom: 3px; }
+.ctx-note { font-size: 9px; color: #444460; line-height: 1.4; }
+
+/* ══════════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════════ */
+@media (max-width: 900px) {
+  .entry-grid { grid-template-columns: 1fr; }
+  .outcome-grid { grid-template-columns: 1fr 1fr; }
+  .features-grid { grid-template-columns: 1fr 1fr; }
+  .context-grid { grid-template-columns: repeat(3, 1fr); }
+  .staging-actions { grid-template-columns: 1fr 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <h1>numbyPad — How It Works</h1>
+  <p>Capture phone numbers on your Apple Watch or iPhone, enrich them with context, then save to Contacts in one tap.</p>
+</div>
+
+<div class="page">
+
+<!-- ══════════════════════════════════════════════════════
+     USE CASE OVERVIEW PILLS
+══════════════════════════════════════════════════════ -->
+<div class="use-case-row">
+  <div class="use-case-pill"><span class="pill-icon">⌚</span> Capture on Apple Watch</div>
+  <div class="use-case-pill"><span class="pill-icon">📱</span> Add number on iPhone</div>
+  <div class="use-case-pill"><span class="pill-icon">↗</span> Share a social profile</div>
+  <div class="use-case-pill"><span class="pill-icon">🗺</span> See captures on a map</div>
+  <div class="use-case-pill"><span class="pill-icon">🎙</span> Record a voice note</div>
+  <div class="use-case-pill"><span class="pill-icon">✅</span> Save to Contacts</div>
+  <div class="use-case-pill"><span class="pill-icon">✨</span> Enrich existing contact</div>
+  <div class="use-case-pill"><span class="pill-icon">✈️</span> Fix numbers for travel</div>
+  <div class="use-case-pill"><span class="pill-icon">🗑</span> Trash & restore</div>
+  <div class="use-case-pill"><span class="pill-icon">🎨</span> Customize accent & icon</div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     STEP 1 — THREE ENTRY POINTS
+══════════════════════════════════════════════════════ -->
+<div class="section-label">Step 1 — Capture a number (three ways)</div>
+
+<div class="entry-grid">
+
+  <!-- Watch -->
+  <div class="entry-card entry-watch">
+    <span class="entry-icon">⌚</span>
+    <div class="entry-title">Capture on Apple Watch</div>
+    <div class="entry-desc">The fastest way. Works with or without your phone nearby. Numbers queue up and sync automatically.</div>
+    <ul class="step-list">
+      <li><span class="step-badge">1</span>Tap the <b>circular complication</b> on your watch face — opens the keypad instantly</li>
+      <li><span class="step-badge">2</span>Type the digits. The <b>country prefix chip</b> appears automatically based on where you are</li>
+      <li><span class="step-badge">3</span>Optionally assign a <b>contact list</b> or record a <b>voice note</b> as a reminder</li>
+      <li><span class="step-badge">4</span>Press the green <b>✓ check</b> — saved instantly, synced to iPhone in the background</li>
+    </ul>
+  </div>
+
+  <!-- iPhone -->
+  <div class="entry-card entry-phone">
+    <span class="entry-icon">📱</span>
+    <div class="entry-title">Add on iPhone</div>
+    <div class="entry-desc">For numbers you want to type on the bigger screen, or when you don't have your Watch.</div>
+    <ul class="step-list">
+      <li><span class="step-badge">1</span>Tap <b>+</b> in the top-right of the Numbers tab</li>
+      <li><span class="step-badge">2</span>Type the number — the field <b>auto-formats</b> and detects the country from your GPS location</li>
+      <li><span class="step-badge">3</span>Add an <b>optional name</b> to pre-fill it on the next screen</li>
+      <li><span class="step-badge">4</span>Tap <b>Save</b> — staged immediately, also syncs to your Watch timeline</li>
+    </ul>
+  </div>
+
+  <!-- Share Extension -->
+  <div class="entry-card entry-share">
+    <span class="entry-icon">↗</span>
+    <div class="entry-title">Share a Profile or Link</div>
+    <div class="entry-desc">Share an Instagram, X (Twitter), or Telegram profile directly into numbyPad from any app.</div>
+    <ul class="step-list">
+      <li><span class="step-badge">1</span>Find the person's profile in Instagram, X, Telegram, Safari, or Maps</li>
+      <li><span class="step-badge">2</span>Tap <b>Share → numbyPad</b> from the system share sheet</li>
+      <li><span class="step-badge">3</span>Pick which <b>staged number</b> the profile belongs to (or create a new one)</li>
+      <li><span class="step-badge">4</span>For <b>location pins</b>: choose the time and rename the place before attaching</li>
+    </ul>
+  </div>
+
+</div>
+
+<!-- Bridge arrows -->
+<div class="flow-divider"><span>All captures land here</span></div>
+
+<!-- ══════════════════════════════════════════════════════
+     WHAT GETS CAPTURED (context chips)
+══════════════════════════════════════════════════════ -->
+<div class="section-label" style="margin-bottom:12px;">Everything captured with the number</div>
+
+<div class="context-grid">
+  <div class="ctx-card">
+    <span class="ctx-icon">📞</span>
+    <span class="ctx-name">Phone number</span>
+    <span class="ctx-note">Auto-formatted to international E.164 standard</span>
+  </div>
+  <div class="ctx-card">
+    <span class="ctx-icon">🌍</span>
+    <span class="ctx-name">Country prefix</span>
+    <span class="ctx-note">Auto-resolved from GPS or manually picked</span>
+  </div>
+  <div class="ctx-card">
+    <span class="ctx-icon">📍</span>
+    <span class="ctx-name">Location</span>
+    <span class="ctx-note">GPS coordinates + nearby place name</span>
+  </div>
+  <div class="ctx-card">
+    <span class="ctx-icon">🕐</span>
+    <span class="ctx-name">Date & time</span>
+    <span class="ctx-note">Exact moment the number was captured</span>
+  </div>
+  <div class="ctx-card">
+    <span class="ctx-icon">📝</span>
+    <span class="ctx-name">Note</span>
+    <span class="ctx-note">Free-text reminder, editable later</span>
+  </div>
+  <div class="ctx-card">
+    <span class="ctx-icon">🎙</span>
+    <span class="ctx-name">Voice note</span>
+    <span class="ctx-note">Recorded on Watch, transcribed on iPhone</span>
+  </div>
+  <div class="ctx-card">
+    <span class="ctx-icon">📋</span>
+    <span class="ctx-name">Contact lists</span>
+    <span class="ctx-note">Pre-assign to groups in Contacts</span>
+  </div>
+  <div class="ctx-card">
+    <span class="ctx-icon">🔗</span>
+    <span class="ctx-name">Social profiles</span>
+    <span class="ctx-note">Instagram, X, Telegram (via share sheet)</span>
+  </div>
+  <div class="ctx-card">
+    <span class="ctx-icon">🌐</span>
+    <span class="ctx-name">Links</span>
+    <span class="ctx-note">URLs with tracking parameters stripped</span>
+  </div>
+  <div class="ctx-card">
+    <span class="ctx-icon">🏷</span>
+    <span class="ctx-name">Name</span>
+    <span class="ctx-note">Optional at capture, required to save</span>
+  </div>
+  <div class="ctx-card">
+    <span class="ctx-icon">📸</span>
+    <span class="ctx-name">Contact photo</span>
+    <span class="ctx-note">Matched from Contacts if it exists</span>
+  </div>
+  <div class="ctx-card">
+    <span class="ctx-icon">🗺</span>
+    <span class="ctx-name">Map pin</span>
+    <span class="ctx-note">Shows on the map tab after saving</span>
+  </div>
+</div>
+
+<div class="flow-divider"><span>All staged in the Numbers tab</span></div>
+
+<!-- ══════════════════════════════════════════════════════
+     STEP 2 — STAGING AREA
+══════════════════════════════════════════════════════ -->
+
+<div class="staging-box">
+  <div class="staging-header">
+    <span class="staging-icon">📥</span>
+    <div class="staging-titles">
+      <h2>Numbers Tab — Staging Area</h2>
+      <p>Every capture waits here until you decide what to do with it. Nothing goes to Contacts without your review.</p>
+    </div>
+  </div>
+
+  <div class="staging-actions">
+    <div class="action-chip chip-name">
+      <span class="chip-icon">🏷</span>
+      <span class="chip-title" style="color:#22c55e">Give it a name</span>
+      <span class="chip-desc" style="color:#407050">Tap any number to open its detail view and type a name — required to save to Contacts</span>
+    </div>
+    <div class="action-chip chip-prefix">
+      <span class="chip-icon">🌍</span>
+      <span class="chip-title" style="color:#38bdf8">Set the prefix</span>
+      <span class="chip-desc" style="color:#305060">If the number arrived without a country code (no signal at capture time), set it here</span>
+    </div>
+    <div class="action-chip chip-place">
+      <span class="chip-icon">📍</span>
+      <span class="chip-title" style="color:#14b8a6">Pick a place</span>
+      <span class="chip-desc" style="color:#204040">Replace raw GPS coordinates with a meaningful place name (restaurant, venue, street)</span>
+    </div>
+    <div class="action-chip chip-list">
+      <span class="chip-icon">📋</span>
+      <span class="chip-title" style="color:#a855f7">Assign to list</span>
+      <span class="chip-desc" style="color:#402060">Add the contact to one or more Contacts groups before saving</span>
+    </div>
+  </div>
+</div>
+
+<div class="flow-divider"><span>Step 3 — Choose what happens next</span></div>
+
+<!-- ══════════════════════════════════════════════════════
+     STEP 3 — OUTCOMES
+══════════════════════════════════════════════════════ -->
+
+<div class="outcome-section">
+  <div class="outcome-grid">
+
+    <!-- Save to Contacts -->
+    <div class="outcome-card outcome-save">
+      <span class="outcome-icon">✅</span>
+      <div class="outcome-title">Save to Contacts</div>
+      <div class="outcome-desc">The main outcome. The number becomes a full contact in your iPhone's Contacts app.</div>
+      <ul class="outcome-steps">
+        <li>Open the staged number</li>
+        <li>Type a <b>name</b> (required)</li>
+        <li>Tap <b>Save to Contacts</b></li>
+        <li>All context (note, place, date, profiles, voice note) is saved with it</li>
+        <li>The number disappears from numbyPad's staging area</li>
+        <li>Your Watch's copy is removed automatically</li>
+      </ul>
+    </div>
+
+    <!-- Enrich existing -->
+    <div class="outcome-card outcome-enrich">
+      <span class="outcome-icon">✨</span>
+      <div class="outcome-title">Enrich Existing Contact</div>
+      <div class="outcome-desc">The number already belongs to someone in your Contacts. Add the capture context to them instead of creating a duplicate.</div>
+      <ul class="outcome-steps">
+        <li>numbyPad detects the number is already in Contacts</li>
+        <li>Shows the matched contact with their photo</li>
+        <li>Tap <b>"Same Person — Enrich Contact"</b></li>
+        <li>Adds the note, location, profiles, voice note to the existing contact</li>
+        <li>Also upgrades national format numbers to full international format</li>
+      </ul>
+    </div>
+
+    <!-- Voice note flow -->
+    <div class="outcome-card outcome-voice">
+      <span class="outcome-icon">🎙</span>
+      <div class="outcome-title">Process Voice Note</div>
+      <div class="outcome-desc">A voice note you recorded on your Watch arrives on iPhone for transcription or AI summary.</div>
+      <ul class="outcome-steps">
+        <li>Voice note transfers automatically from Watch</li>
+        <li>Appears in the staged number's detail view</li>
+        <li>Tap <b>Transcribe</b> → converts speech to text, prepended to the note field</li>
+        <li>Tap <b>Summarize with Apple Intelligence</b> → AI writes a concise summary</li>
+        <li>Saved to iCloud alongside the contact</li>
+      </ul>
+    </div>
+
+    <!-- Trash -->
+    <div class="outcome-card outcome-trash">
+      <span class="outcome-icon">🗑</span>
+      <div class="outcome-title">Move to Trash</div>
+      <div class="outcome-desc">Don't need it — but don't lose it either. Numbers sit in Trash for 30 days before auto-deletion.</div>
+      <ul class="outcome-steps">
+        <li>Swipe left on any staged number, or tap <b>Move to Trash</b></li>
+        <li>Also works from the Watch — delete there, it disappears here too</li>
+        <li>Open the <b>Trash tab</b> to restore or permanently delete</li>
+        <li>Restore → number returns to the staging area on both devices</li>
+        <li>Auto-purge after 30 days, or empty all at once from Settings</li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     EXTRA FEATURES
+══════════════════════════════════════════════════════ -->
+<div class="section-label">Additional features</div>
+
+<div class="features-grid">
+
+  <div class="feature-card">
+    <div class="feature-title" style="color:#14b8a6">🗺 Map View</div>
+    <div class="feature-body">
+      Every captured number with a GPS fix appears as a <b>pin on a map</b>. See at a glance where and when you met people — conference, event, bar, street. Tap a pin to open the staged number directly from the map.
+    </div>
+  </div>
+
+  <div class="feature-card">
+    <div class="feature-title" style="color:#f59e0b">✈️ Fix for Travel</div>
+    <div class="feature-body">
+      Contacts saved with local-format numbers (e.g. 347 1234567 instead of +39 347 1234567) <b>stop working abroad</b>. numbyPad scans your Contacts and shows a list with before → after previews. Choose your country, select who to fix, tap Apply — done in seconds.
+    </div>
+  </div>
+
+  <div class="feature-card">
+    <div class="feature-title" style="color:#a855f7">🔄 Watch–iPhone Sync</div>
+    <div class="feature-body">
+      Everything syncs both ways in real time. Numbers captured on the Watch appear immediately on the iPhone's Numbers tab. Edits made on the iPhone (name, note, place) mirror back to the Watch timeline. Works live when both are active, or queued in the background.
+    </div>
+  </div>
+
+  <div class="feature-card">
+    <div class="feature-title" style="color:#ec4899">📱 Share from Any App</div>
+    <div class="feature-body">
+      Share an Instagram, X, or Telegram profile with numbyPad from any app. If you have one staged number: the profile attaches automatically. Multiple staged numbers: a picker asks which. Zero staged numbers: it waits and attaches to your next capture. <b>Tracker parameters</b> are stripped from URLs by default.
+    </div>
+  </div>
+
+  <div class="feature-card">
+    <div class="feature-title" style="color:#38bdf8">🌍 Smart Country Prefix</div>
+    <div class="feature-body">
+      The Watch resolves your country prefix <b>offline-first</b> — no network needed. It starts with an offline country table, refines it as the GPS fix arrives, and falls back to your iPhone's last known region. You can also pick the prefix manually by tapping the chip on the keypad.
+    </div>
+  </div>
+
+  <div class="feature-card">
+    <div class="feature-title" style="color:#f87171">🎨 Accent Color & Icon</div>
+    <div class="feature-body">
+      Choose an accent color in <b>Settings → numbyPad</b>. The entire app (Watch, iPhone, share sheet) updates in sync — and your home screen icon switches to match automatically, with no confirmation dialog. Available in 12 colors including Blue, Red, Green, Purple, Pink, and more.
+    </div>
+  </div>
+
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     FULL FLOW VISUAL
+══════════════════════════════════════════════════════ -->
+<div class="section-label" style="margin-bottom:20px;">Complete flow at a glance</div>
+
+<div style="background:var(--surface); border:1px solid var(--border); border-radius:24px; overflow:hidden; margin-bottom:48px;">
+<svg viewBox="0 0 1100 520" xmlns="http://www.w3.org/2000/svg" style="display:block;width:100%;height:auto;">
+  <defs>
+    <linearGradient id="u-bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0d0d1a"/>
+      <stop offset="100%" stop-color="#080810"/>
+    </linearGradient>
+    <marker id="u-arr" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="5" markerHeight="5" orient="auto">
+      <path d="M0 1L7 4L0 7Z" fill="#2a2a50"/>
+    </marker>
+    <marker id="u-arr-g" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="5" markerHeight="5" orient="auto">
+      <path d="M0 1L7 4L0 7Z" fill="#155030"/>
+    </marker>
+    <marker id="u-arr-r" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="5" markerHeight="5" orient="auto">
+      <path d="M0 1L7 4L0 7Z" fill="#5a1414"/>
+    </marker>
+    <marker id="u-arr-b" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="5" markerHeight="5" orient="auto">
+      <path d="M0 1L7 4L0 7Z" fill="#1e3a6e"/>
+    </marker>
+    <marker id="u-arr-p" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="5" markerHeight="5" orient="auto">
+      <path d="M0 1L7 4L0 7Z" fill="#6d1040"/>
+    </marker>
+    <marker id="u-arr-s" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="5" markerHeight="5" orient="auto">
+      <path d="M0 1L7 4L0 7Z" fill="#0d4a44"/>
+    </marker>
+    <marker id="u-arr-a" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="5" markerHeight="5" orient="auto">
+      <path d="M0 1L7 4L0 7Z" fill="#5a3a00"/>
+    </marker>
+  </defs>
+
+  <rect width="1100" height="520" fill="url(#u-bg)"/>
+
+  <!-- ── ENTRY NODES ── -->
+
+  <!-- Watch Complication (top left) -->
+  <rect x="30" y="28" width="180" height="64" rx="16" fill="#0a1628" stroke="#1e3a6e" stroke-width="1.2"/>
+  <text x="50" y="52" font-family="-apple-system,sans-serif" font-size="13" font-weight="700" fill="#3b82f6">⌚ Complication tap</text>
+  <text x="50" y="70" font-family="-apple-system,sans-serif" font-size="10" fill="#4060a0">Opens keypad instantly</text>
+
+  <!-- Watch add -->
+  <rect x="30" y="108" width="180" height="64" rx="16" fill="#0a1628" stroke="#1e3a6e" stroke-width="1.2"/>
+  <text x="50" y="132" font-family="-apple-system,sans-serif" font-size="13" font-weight="700" fill="#3b82f6">⌚ Watch + Add</text>
+  <text x="50" y="150" font-family="-apple-system,sans-serif" font-size="10" fill="#4060a0">From the main watch app</text>
+
+  <!-- iPhone add -->
+  <rect x="30" y="188" width="180" height="64" rx="16" fill="#130a24" stroke="#3d1672" stroke-width="1.2"/>
+  <text x="50" y="212" font-family="-apple-system,sans-serif" font-size="13" font-weight="700" fill="#a855f7">📱 iPhone + Add</text>
+  <text x="50" y="230" font-family="-apple-system,sans-serif" font-size="10" fill="#605080">Auto-formats, GPS country</text>
+
+  <!-- Share extension -->
+  <rect x="30" y="268" width="180" height="64" rx="16" fill="#1a061a" stroke="#6d1040" stroke-width="1.2"/>
+  <text x="50" y="292" font-family="-apple-system,sans-serif" font-size="13" font-weight="700" fill="#ec4899">↗ Share sheet</text>
+  <text x="50" y="310" font-family="-apple-system,sans-serif" font-size="10" fill="#804060">Profile · URL · Location pin</text>
+
+  <!-- KEYPAD node (middle-left) -->
+  <rect x="270" y="58" width="170" height="74" rx="16" fill="#0a1628" stroke="#1e3a6e" stroke-width="1.2"/>
+  <text x="290" y="82" font-family="-apple-system,sans-serif" font-size="13" font-weight="700" fill="#3b82f6">⌨ Keypad</text>
+  <text x="290" y="99" font-family="-apple-system,sans-serif" font-size="10" fill="#4060a0">Type number</text>
+  <text x="290" y="114" font-family="-apple-system,sans-serif" font-size="10" fill="#4060a0">Prefix chip · List picker · Voice note</text>
+
+  <!-- Arrows: complication & watch add → Keypad -->
+  <line x1="210" y1="60" x2="268" y2="85" stroke="#1e3a6e" stroke-width="1.2" marker-end="url(#u-arr-b)"/>
+  <line x1="210" y1="140" x2="268" y2="105" stroke="#1e3a6e" stroke-width="1.2" marker-end="url(#u-arr-b)"/>
+
+  <!-- iPhone add → staging (direct) -->
+  <line x1="210" y1="220" x2="500" y2="250" stroke="#3d1672" stroke-width="1.2" stroke-dasharray="5,3" marker-end="url(#u-arr)"/>
+
+  <!-- Share → staging (direct) -->
+  <line x1="210" y1="300" x2="500" y2="270" stroke="#6d1040" stroke-width="1.2" stroke-dasharray="5,3" marker-end="url(#u-arr)"/>
+
+  <!-- Keypad → WCSession label -->
+  <line x1="440" y1="95" x2="496" y2="220" stroke="#1e3a6e" stroke-width="1.2" marker-end="url(#u-arr)"/>
+
+  <!-- WCSession (center) -->
+  <rect x="440" y="160" width="200" height="56" rx="14" fill="#080810" stroke="#1c1c30" stroke-width="1"/>
+  <text x="540" y="183" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="11" font-weight="700" fill="#333348">WCSession</text>
+  <text x="540" y="199" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="10" fill="#252540">Live · Background · File transfer</text>
+
+  <!-- WCSession → Staging -->
+  <line x1="640" y1="188" x2="704" y2="210" stroke="#2a2a50" stroke-width="1.2" marker-end="url(#u-arr)"/>
+
+  <!-- STAGING AREA (center-right) -->
+  <rect x="706" y="130" width="200" height="148" rx="18" fill="#0f0818" stroke="#2a1e4a" stroke-width="1.5"/>
+  <!-- Glow top -->
+  <line x1="750" y1="130" x2="862" y2="130" stroke="#5a30a0" stroke-width="1.5"/>
+  <text x="806" y="155" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="13" font-weight="700" fill="#a855f7">📥 Staging Area</text>
+  <text x="806" y="173" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="10" fill="#605080">Numbers tab · iPhone</text>
+  <line x1="720" y1="182" x2="892" y2="182" stroke="#1c1630" stroke-width="1"/>
+  <text x="806" y="198" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="10" fill="#504070">Edit name · note · prefix</text>
+  <text x="806" y="213" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="10" fill="#504070">Pick place · contact list</text>
+  <text x="806" y="228" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="10" fill="#504070">Process voice note</text>
+  <text x="806" y="243" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="10" fill="#504070">Attach social profile</text>
+  <text x="806" y="258" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="10" fill="#504070">Review · decide</text>
+
+  <!-- OUTCOME NODES (far right) -->
+
+  <!-- Save to Contacts -->
+  <rect x="960" y="68" width="120" height="54" rx="14" fill="#071a0f" stroke="#155030" stroke-width="1.2"/>
+  <text x="1020" y="92" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="12" font-weight="700" fill="#22c55e">✅ Saved</text>
+  <text x="1020" y="108" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="10" fill="#306040">To Contacts</text>
+
+  <!-- Enrich -->
+  <rect x="960" y="136" width="120" height="54" rx="14" fill="#041420" stroke="#0d3a5a" stroke-width="1.2"/>
+  <text x="1020" y="160" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="12" font-weight="700" fill="#38bdf8">✨ Enriched</text>
+  <text x="1020" y="176" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="10" fill="#204060">Existing contact</text>
+
+  <!-- Trash -->
+  <rect x="960" y="204" width="120" height="54" rx="14" fill="#1a0606" stroke="#5a1414" stroke-width="1.2"/>
+  <text x="1020" y="228" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="12" font-weight="700" fill="#ef4444">🗑 Trashed</text>
+  <text x="1020" y="244" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="10" fill="#604040">30-day holding</text>
+
+  <!-- Map -->
+  <rect x="960" y="272" width="120" height="54" rx="14" fill="#041412" stroke="#0d4a44" stroke-width="1.2"/>
+  <text x="1020" y="296" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="12" font-weight="700" fill="#14b8a6">🗺 On Map</text>
+  <text x="1020" y="312" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="10" fill="#204040">GPS pin · all captures</text>
+
+  <!-- Arrows: Staging → Outcomes -->
+  <line x1="906" y1="168" x2="958" y2="110" stroke="#155030" stroke-width="1.2" marker-end="url(#u-arr-g)"/>
+  <line x1="906" y1="185" x2="958" y2="168" stroke="#0d3a5a" stroke-width="1.2" marker-end="url(#u-arr-s)"/>
+  <line x1="906" y1="215" x2="958" y2="225" stroke="#5a1414" stroke-width="1.2" marker-end="url(#u-arr-r)"/>
+  <line x1="906" y1="240" x2="958" y2="290" stroke="#0d4a44" stroke-width="1.2" marker-end="url(#u-arr-s)"/>
+
+  <!-- Restore arrow -->
+  <path d="M960 228 Q940 310 806 280" stroke="#5a2a00" stroke-width="1" stroke-dasharray="4,3" fill="none" marker-end="url(#u-arr)"/>
+  <text x="870" y="296" font-family="-apple-system,sans-serif" font-size="9" fill="#4a2a00">Restore</text>
+
+  <!-- Sync echo arrow (phone → watch) -->
+  <path d="M706 152 Q580 100 440 76" stroke="#1e3a6e" stroke-width="1" stroke-dasharray="4,3" fill="none" marker-end="url(#u-arr-b)"/>
+  <text x="560" y="96" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="9" fill="#2a3a5a">sync echo to Watch</text>
+
+  <!-- ── BOTTOM FEATURES ROW ── -->
+
+  <!-- Watch sync banner -->
+  <rect x="30" y="370" width="290" height="54" rx="14" fill="#080810" stroke="#1c1c30" stroke-width="1"/>
+  <text x="50" y="393" font-family="-apple-system,sans-serif" font-size="12" font-weight="700" fill="#666688">🔄  Bidirectional Sync</text>
+  <text x="50" y="410" font-family="-apple-system,sans-serif" font-size="10" fill="#333348">Watch ↔ iPhone · real-time or background queue</text>
+
+  <!-- Travel fix -->
+  <rect x="338" y="370" width="250" height="54" rx="14" fill="#1a1100" stroke="#5a3a00" stroke-width="1"/>
+  <text x="358" y="393" font-family="-apple-system,sans-serif" font-size="12" font-weight="700" fill="#f59e0b">✈️  Fix for Travel</text>
+  <text x="358" y="410" font-family="-apple-system,sans-serif" font-size="10" fill="#705020">Adds country code to local-format contacts</text>
+
+  <!-- Theming -->
+  <rect x="606" y="370" width="220" height="54" rx="14" fill="#080810" stroke="#1c1c30" stroke-width="1"/>
+  <text x="626" y="393" font-family="-apple-system,sans-serif" font-size="12" font-weight="700" fill="#888">🎨  Accent & Icon</text>
+  <text x="626" y="410" font-family="-apple-system,sans-serif" font-size="10" fill="#3a3a5a">12 colors · icon matches automatically</text>
+
+  <!-- Smart prefix -->
+  <rect x="844" y="370" width="236" height="54" rx="14" fill="#080810" stroke="#1c1c30" stroke-width="1"/>
+  <text x="864" y="393" font-family="-apple-system,sans-serif" font-size="12" font-weight="700" fill="#888">🌍  Smart Prefix</text>
+  <text x="864" y="410" font-family="-apple-system,sans-serif" font-size="10" fill="#3a3a5a">Offline-first · GPS · picks itself</text>
+
+  <!-- Bottom row labels -->
+  <text x="550" y="460" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="10" fill="#222238" letter-spacing="1">— Additional capabilities —</text>
+
+  <!-- AI label at top of voice note flow -->
+  <rect x="30" y="440" width="450" height="40" rx="12" fill="#0d0618" stroke="#2a1050" stroke-width="1"/>
+  <text x="255" y="456" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="11" font-weight="600" fill="#7030c0">✦  Apple Intelligence</text>
+  <text x="255" y="472" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="10" fill="#3a1860">Voice note AI summary · on-device · no data leaves iPhone</text>
+
+  <rect x="500" y="440" width="450" height="40" rx="12" fill="#041412" stroke="#0d3a30" stroke-width="1"/>
+  <text x="725" y="456" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="11" font-weight="600" fill="#14b8a6">🔒  Privacy-first</text>
+  <text x="725" y="472" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="10" fill="#0a4040">Numbers never leave your devices · no account required</text>
+
+</svg>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     PRIVACY & QUICK TIPS FOOTER
+══════════════════════════════════════════════════════ -->
+<div class="section-label">Good to know</div>
+
+<div class="features-grid">
+  <div class="feature-card">
+    <div class="feature-title" style="color:#22c55e">🔒 Privacy-first design</div>
+    <div class="feature-body">
+      <b>No account.</b> No cloud. No analytics. Your numbers live on your Apple Watch, your iPhone, and optionally iCloud (for voice notes only). Nothing is sent to any server.
+    </div>
+  </div>
+  <div class="feature-card">
+    <div class="feature-title" style="color:#f59e0b">⚡ Offline-ready</div>
+    <div class="feature-body">
+      You can capture a number on your Watch <b>with no WiFi, no cellular, and no iPhone nearby.</b> The capture queues and syncs the moment a connection is available. The prefix chip resolves offline from a built-in country table.
+    </div>
+  </div>
+  <div class="feature-card">
+    <div class="feature-title" style="color:#38bdf8">🔁 Duplicate protection</div>
+    <div class="feature-body">
+      numbyPad checks whether the number <b>already exists in your Contacts</b> before you save. If it does, it offers to enrich the existing record instead — so you never end up with two entries for the same person.
+    </div>
+  </div>
+</div>
+
+</div><!-- /page -->
+</body>
+</html>
