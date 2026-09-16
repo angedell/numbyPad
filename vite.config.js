@@ -4,4 +4,7 @@ import react from "@vitejs/plugin-react";
 export default defineConfig({
   base: "/numbyPad/",
   plugins: [react()],
+  build: {
+    outDir: "docs",
+  }
 });
